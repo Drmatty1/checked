@@ -1,67 +1,32 @@
 class Solution {
-    
-    int[] sol1(int[] nums, int k){
-        
-        int n = nums.length;
-        int []ans = new int[n-k+1];
-        TreeMap<Integer,Integer> tm = new TreeMap<>();
- 
-        for(int i = 0; i<n; i++){
-            
-            // add in current window
-            tm.put(nums[i], tm.getOrDefault(nums[i],0)+1);
-
-            // remove form current window
-            if(!tm.isEmpty() && i-k>=0 ){
-                int toRem = nums[i-k];
-
-                tm.put(toRem, tm.get(toRem)-1); 
-                if(tm.get(toRem) == 0){
-                    tm.remove(toRem);
-                }
-            }
-            
-            // store maximum
-            if(i>=k-1)
-                ans[i-k+1] = tm.lastKey();
-
-        }
-
-        return ans;
-    }
-
-    int[] sol2(int[] nums, int k){
-        
-        int n = nums.length;
-        int []ans = new int[n-k+1];
-        Deque<Integer> dq = new ArrayDeque<>();
- 
-        for(int i = 0; i<n; i++){
-            
-            // add in current window
-            while(!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) 
-                dq.pollLast();
-
-            dq.addLast(i);
-
-            // remove form current window
-            while(!dq.isEmpty() && dq.peek() <= i-k ){
-                dq.pollFirst();
-            }
-            
-            // store maximum
-            if(i>=k-1)
-                ans[i-k+1] = nums[dq.peekFirst()];
-
-        }
-
-        return ans;
-    }
 
     public int[] maxSlidingWindow(int[] nums, int k) {
-        return sol1(nums,k);
+        int n = nums.length;
+        int []log = new int[n+1];
+        for(int i=2; i<=n; i++) log[i] = log[i/2]+1;
+        int levels = log[n]+1;
 
-        // return sol2(nums,k);
-        
+        int [][] s = new int[n][levels];
+        for(int i=0; i<n; i++) s[i][0] = nums[i];
+
+        for(int j=1; j<levels; j++){
+            for(int i = 0; i<(n-(1<<j)+1); i++ ){
+                s[i][j] = Math.max(s[i][j-1],s[i+(1<<(j-1))][j-1]);
+            }
+        }
+
+        // for(int j=0; j<levels; j++){
+        //     for(int i=0; i<n; i++) System.out.print(s[i][j]+" ");
+        //     System.out.println();
+        // }
+
+        int J = log[k];
+        int []ans = new int[n-k+1];
+        for(int i=0; i<n-k+1; i++){
+            int r = i+k-1;
+            ans[i] = Math.max(s[i][J],s[r-(1<<J)+1][J]); 
+        }
+
+        return ans;
     }
 }
