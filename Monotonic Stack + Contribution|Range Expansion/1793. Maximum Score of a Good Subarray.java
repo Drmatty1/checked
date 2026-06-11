@@ -45,6 +45,32 @@ class Solution {
        
     }
 
+    int largestRectangleArea_1(int []nums, int k){
+
+        int n = nums.length;
+        // Deque<Integer> st = new ArrayDeque<>();
+        int []st = new int[n];
+        int top = -1;
+
+        int ans = 0;
+        for(int i=0; i<=n; i++){
+
+            while(
+                top != -1 && 
+                ((i==n) || nums[i]<nums[st[top]])
+            ){
+                int h = nums[st[top--]];
+                int left = (top == -1)?(-1):st[top];
+                int right = i;
+                if(right-1 >= k && left+1<=k)
+                    ans = Math.max(ans, h*(right-left-1));
+            }
+
+            st[++top] = i;
+        }
+        return ans;
+    }
+
     int solOP_TwoPointer(int []nums, int k){
         int i=k, j=k, n = nums.length;
         int ans = nums[k];
@@ -175,7 +201,8 @@ class Solution {
 
     public int maximumScore(int[] nums, int k) {
         // return largestRectangleArea(nums, k);
+        return largestRectangleArea_1(nums, k);
         // return solOP(nums,k);
-        return solBS(nums, k);
+        // return solBS(nums, k);
     }
 }
