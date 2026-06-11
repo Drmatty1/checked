@@ -1,0 +1,1 @@
+here 1856 can be solved using divide and conqueer + segment/sparse table + prefix sum !!
