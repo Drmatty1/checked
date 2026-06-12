@@ -22,13 +22,24 @@ class TreeAncestor {
 
     }
     
-    public int getKthAncestor(int node, int k) {
+    public int getKthAncestor1(int node, int k) {
         if( node < 0 || k == 0 ) return node;
         if(k == 1) return arr[node][0];
         // int l = log[k];
         int l = 31 - Integer.numberOfLeadingZeros(k);
         int k1 = 1<<l;
         return getKthAncestor(arr[node][l], k-k1);
+    }
+    public int getKthAncestor(int node, int k) {
+        int j = 0;
+        while(k > 0 && node != -1){
+            if( (k&1) == 1 ){
+                node = arr[node][j];
+            }
+            k = k>>1;
+            j++;
+        }
+        return node;
     }
 }
 
