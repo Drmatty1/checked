@@ -1,7 +1,7 @@
 class Solution {
     int [][]dir = {{1,0},{-1,0},{0,1},{0,-1}};
     
-    // m-1
+    // m-1 
     boolean check(List<List<Integer>> grid, int i, int j, int hp, boolean [][][]dp, boolean [][][]vis){
         int n = grid.size(), m = grid.get(0).size();
     
