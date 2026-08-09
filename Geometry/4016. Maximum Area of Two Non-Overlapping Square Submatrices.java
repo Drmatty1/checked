@@ -1,8 +1,83 @@
 class Solution {
     int [][]dp ;
+    
+    // R1 !!
+    // overall with sol1 O(m*n*log(min(m,n)))
+    int query(int[][] pref, int r1, int c1, int r2, int c2) {
+        if (r1 > r2 || c1 > c2) return 0;
 
+        return pref[r2 + 1][c2 + 1]
+             - pref[r1][c2 + 1]
+             - pref[r2 + 1][c1]
+             + pref[r1][c1];
+    }
+    boolean valid(int[][] mat, int k) {
+
+        int r = mat.length;
+        int c = mat[0].length;
+
+        // pref[x][y] = number of valid k*k squares
+        // whose top-left corner is inside [0..x-1][0..y-1]
+        int[][] pref = new int[r + 1][c + 1];
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+
+                int val = 0;
+
+                if (i + k <= r && j + k <= c && dp[i][j] >= k)
+                    val = 1;
+
+                pref[i + 1][j + 1] =
+                        val
+                        + pref[i][j + 1]
+                        + pref[i + 1][j]
+                        - pref[i][j];
+            }
+        }
+
+        // Choose first square
+        for (int i = 0; i + k <= r; i++) {
+            for (int j = 0; j + k <= c; j++) {
+
+                if (dp[i][j] < k)
+                    continue;
+
+                /*
+                    First square:
+
+                    rows    i ... i+k-1
+                    cols    j ... j+k-1
+                */
+
+                // RIGHT
+                // second square starts at col >= j+k
+                if (query(pref, 0, j + k, r - k, c - k) > 0)
+                    return true;
+
+                // LEFT
+                // second square ends before col j
+                if (query(pref, 0, 0, r - k, j - k) > 0)
+                    return true;
+
+                // BELOW
+                // second square starts at row >= i+k
+                if (query(pref, i + k, 0, r - k, c - k) > 0)
+                    return true;
+
+                // ABOVE
+                // second square ends before row i
+                if (query(pref, 0, 0, i - k, c - k) > 0)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    // R1 !!!
     //  overall with sol1 O(m*n*log(min(m,n)))
-    boolean valid(int [][]mat, int k){
+    boolean valid1(int [][]mat, int k){
 
         int r = mat.length, c= mat[0].length;
 
@@ -22,6 +97,7 @@ class Solution {
 
         return (maxR-minR >=k) || (maxC-minC >=k);
     }
+
 
     //Binary Serach
     int sol1(int[][] mat) {
