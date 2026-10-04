@@ -60,9 +60,36 @@ class Solution {
 
     }
 
+    // something diff !!!
+    int maxNonOverlappingIntervals(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return 0;
+        }
+
+        // 1. Sort intervals by their end times in ascending order
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
+
+        int count = 1;
+        int lastEnd = intervals[0][1];
+
+        // 2. Greedily pick the next interval that starts after or when the last one ends
+        for (int i = 1; i < intervals.length; i++) {
+            // Use '>=' if touching at a point counts as non-overlapping ([1,2] and [2,3])
+            // Use '>' if touching counts as an overlap
+            if (intervals[i][0] >= lastEnd) {
+                count++;
+                lastEnd = intervals[i][1];
+            }
+        }
+
+        return count;
+    }
+
     public int eraseOverlapIntervals(int[][] intervals) {
         
-        return sol2(intervals);
+        // return sol2(intervals);
+
+        return intervals.length-maxNonOverlappingIntervals(intervals);
 
     }
 }
